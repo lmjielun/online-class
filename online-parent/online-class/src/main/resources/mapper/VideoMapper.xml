@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lee.mapper.VideoMapper">
+
+    <resultMap id="baseMapper" type="com.lee.domain.Video">
+        <id column="video_id" property="videoId" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR" />  <!-- 视频标题 -->
+        <result column="summary" property="summary" jdbcType="VARCHAR" />  <!-- 视频概述 -->
+        <result column="cover_img" property="coverImg" jdbcType="VARCHAR" />  <!-- 视频封面图 -->
+        <result column="price" property="price" jdbcType="INTEGER" />  <!-- 价格-->
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />  <!-- 创建日期 -->
+        <result column="point" property="point" jdbcType="DOUBLE" />  <!-- 创建日期 -->
+        <!--关联-->
+        <collection property="chapterList" ofType="com.lee.domain.Chapter">
+            <id column="chapter_id" property="chapterId" jdbcType="INTEGER" /><!--章id-->
+            <result column="video_id" property="videoId" jdbcType="INTEGER" />  <!-- 视频Id -->
+            <result column="chapter_title" property="title" jdbcType="VARCHAR" />  <!-- 章节名称 -->
+            <result column="ordered" property="ordered" jdbcType="INTEGER" />  <!-- 章节顺序 -->
+            <result column="chapter_create_time" property="createTime" jdbcType="TIMESTAMP" />  <!-- 章节顺序 -->
+            <!--关联-->
+            <collection property="episodeList" ofType="com.lee.domain.Episode">
+                <id column="episode_id" property="episodeId" jdbcType="INTEGER" />
+                <result column="episode_title" property="title" jdbcType="VARCHAR" />  <!-- 概述 -->
+                <result column="num" property="num" jdbcType="INTEGER" />  <!-- 第几集,全局顺序 -->
+                <result column="ordered" property="ordered" jdbcType="INTEGER" />  <!-- 顺序 -->
+                <result column="play_url" property="playUrl" jdbcType="VARCHAR" />  <!-- 视频地址 -->
+                <result column="chapter_id" property="chapterId" jdbcType="INTEGER" />  <!-- 章节主键 -->
+                <result column="video_id" property="videoId" jdbcType="INTEGER" />  <!-- 视频id -->
+                <result column="free" property="free" jdbcType="INTEGER" />  <!-- 0表示免费，1表示首付 -->
+                <result column="episode_create_time" property="createTime" jdbcType="TIMESTAMP" />  <!-- 创建时间 -->
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="videoList" resultType="com.lee.domain.Video">
+        select * from video
+    </select>
+
+    <select id="getVideoDetail"  resultMap="baseMapper">
+        SELECT
+            v.video_id,v.title,v.summary,v.cover_img,v.price,v.point,v.create_time,
+            c.chapter_id,c.title as chapter_title,c.create_time as chapter_create_time,
+            e.episode_id,e.title as episode_title,e.num,e.ordered,e.play_url,e.free,e.create_time as episode_create_time
+        FROM
+            video v
+        LEFT JOIN
+            chapter c
+        ON
+            v.video_id = c.video_id
+        LEFT JOIN
+            episode e
+        ON
+            c.chapter_id = e.chapter_id
+        WHERE
+            v.video_id = #{videoId}
+        ORDER BY
+            c.ordered,e.num asc
+    </select>
+    <select id="findById" resultType="com.lee.domain.Video">
+        select * from video where video_id = #{videoId}
+    </select>
+
+</mapper>
