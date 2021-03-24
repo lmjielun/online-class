@@ -45,15 +45,6 @@ public class MyTest {
         // 可以改为
         qrySql.append(" FROM ? a");
         paList.add(table);
-
-
-
-
-
-
-
-
-
         return "123";
     }
 
