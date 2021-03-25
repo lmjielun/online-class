@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,7 +33,6 @@ public class VideoMapperTest {
         String s = "[{\"id\":\"1\",\"text\":\"测试1\"},{\"id\":\"2\",\"text\":\"测试2\"},{\"id\":\"3\",\"text\":\"测试3\"}]";
         ArrayList<String> list = JSON.parseObject(s, new TypeReference<ArrayList<String>>() {
         });
-
         for (int i = 0; i < list.size(); i++) {
             String s1 = list.get(i);
             if (i == 1) {
